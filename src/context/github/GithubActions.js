@@ -10,18 +10,18 @@ const github = axios.create({
 
 // Get search results
 export const searchUsers = async (text) => {
-  const pararms = new URLSearchParams({
+  const params = new URLSearchParams({
     q: text,
   });
-  const response = await github.get(`/search/users?${pararms}`);
+  const response = await github.get(`/search/users?${params}`);
   return response.data.items;
 };
 
 // Get user and repos
 export const getUserAndRepos = async (login) => {
   const [user, repos] = await Promise.all([
-    github.get(`/search/users?${login}`),
-    github.get(`/search/users?${login}/repos`),
+    github.get(`/users/${login}`),
+    github.get(`/users/${login}/repos`),
   ]);
 
   if (user.status === 404) {
@@ -29,10 +29,8 @@ export const getUserAndRepos = async (login) => {
     return;
   }
 
-  console.log(user.data, repos.data)
   return {
     user: user.data,
     repos: repos.data,
   };
 };
-
